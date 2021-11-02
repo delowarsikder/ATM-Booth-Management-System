@@ -4,17 +4,13 @@ import java.awt.event.*;
 import java.sql.*;
 
 public class BalanceEnquiry extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
-    public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth=globalVariable.getWindowWidth();
-        windowHeight=globalVariable.getWindowHeight();
-        winX=globalVariable.getWinX();
-        winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
 
+    String assetsPath = "E:\\Java\\ATM_BOOTH\\assets";
+    public static void main(String[] args) {
         BalanceEnquiry balanceEnquiry = new BalanceEnquiry();
         balanceEnquiry.setLocation(winX, winY);
         balanceEnquiry.setSize(windowWidth, windowHeight);
@@ -22,8 +18,6 @@ public class BalanceEnquiry extends JFrame implements ActionListener {
         balanceEnquiry.setResizable(false);
         balanceEnquiry.setVisible(true);
     }
-
-
     JPasswordField txtAccPass = new JPasswordField(25);
     JTextField txtBalance = new JTextField(25);
     JLabel lblAccPass = new JLabel("Pin Number ", JLabel.RIGHT);
@@ -33,7 +27,7 @@ public class BalanceEnquiry extends JFrame implements ActionListener {
     JButton btnBalanceInquiry = new JButton(new ImageIcon(assetsPath + "/balanceenquiry.png"));
 
     Connection connection;
-    //ResultSet rs;
+    //ResultSet resultSet;
     Statement statement;
 
     public BalanceEnquiry() {
@@ -121,14 +115,14 @@ public class BalanceEnquiry extends JFrame implements ActionListener {
         } else if (source == btnBalanceInquiry) {
             try {
                 statement = connection.createStatement();
-                ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO ='" + Login.currentLoginAccountNo + "'");
+                ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo ='" + Login.currentLoginAccountNo + "'");
                 String strCurrentAcc = "";
                 String strPin = "";
                 String strBalance = "";
                 while (rs.next()) {
-                    strCurrentAcc = rs.getString(9);
-                    strPin = rs.getString(4);
-                    strBalance = rs.getString(8);
+                    strCurrentAcc = rs.getString("AccountNo");
+                    strPin = rs.getString("Password");
+                    strBalance = rs.getString("Amount");
                 }
                 if (txtAccPass.getText().length() != 0) {
                     if (strCurrentAcc.length() != 0) {

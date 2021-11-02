@@ -2,9 +2,10 @@
 2. if you are already registered just press login button.
 * Login process
 ` Enter your valid account no and password to login your account `
-### Sample existing accounts:
+
+* ` Sample existing accounts:`
+
 	account:1000 , password:1000
-	account:1001, password:1001
 * Keep in mind that same account and password use for testing purpose.But it is not good practice in real life
 
 3. if you are not registered , to use this application you should registered first.
@@ -23,4 +24,5 @@
 * You can find report on ATM_Machine Report_final.docx
 * You find project screen shot on project_Screen shot folder
 
-$ if any bug or error found in my exe file or code please inform me
+ if any bug or error found in my exe file or code please inform me
+> N.B: I have made it testing purpose not real life uses

@@ -9,18 +9,13 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 public class Registration extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
+    String  assetsPath= "E:\\Java\\ATM_BOOTH\\assets";
+
     public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth=globalVariable.getWindowWidth();
-        windowHeight=globalVariable.getWindowHeight();
-        winX=globalVariable.getWinX();
-        winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
-
-
         Registration registration = new Registration();
         registration.setSize(windowWidth, windowHeight);
         registration.setVisible(true);
@@ -59,14 +54,14 @@ public class Registration extends JFrame implements ActionListener {
 
     Connection connection;
     Statement statement;
-    PreparedStatement ps;
-    ResultSet rs;
+    PreparedStatement preparedStatement;
+    ResultSet resultSet;
 
     public void clear() {
         txtAccountNo.setText("");
         txtFName.setText("");
-        txtPassword.setText("");
         txtLName.setText("");
+        txtPassword.setText("");
         txtConfirmPass.setText("");
     }
 
@@ -194,11 +189,13 @@ public class Registration extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        DateAndTime dateAndTime = new DateAndTime();
+        GlobalVariable globalVariable = new GlobalVariable();
 
         Object source = e.getSource();
 
         if (source == btnRegistration) {
-            String saccountno = txtAccountNo.getText();
+            String sAccountNo = txtAccountNo.getText();
             String sfname = txtFName.getText();
             String slname = txtLName.getText();
             String spass = txtPassword.getText();
@@ -206,28 +203,28 @@ public class Registration extends JFrame implements ActionListener {
             String sday = txtDay.getText();
             String smon = txtMonth.getText();
             String syear = txtYear.getText();
-            String Date = syear + "-" + smon + "-" + sday;
+            String birthDate = sday + "-" + smon + "-" + syear;
             String sAmount = txtCash.getText();
             try {
-                if ((saccountno.length() == 0 || sfname.length() == 0 || spass.length() == 0 || slname.length() == 0 || sconfirmpass.length() == 0)) {
+                if ((sAccountNo.length() == 0 || sfname.length() == 0 || spass.length() == 0 || slname.length() == 0 || sconfirmpass.length() == 0)) {
                     JOptionPane.showMessageDialog(null, "Some Fields are empty", "WARNING", JOptionPane.WARNING_MESSAGE);
                 } else {
                     if (spass.equals(sconfirmpass)) {
 
                         statement = connection.createStatement();
-                        rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO = '" + saccountno + "'");
+                        resultSet = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo = '" + sAccountNo + "'");
                         String strAcconutNO = "";
-                        while (rs.next()) {
-                            strAcconutNO = rs.getString(9);
+                        while (resultSet.next()) {
+                            strAcconutNO = resultSet.getString("AccountNo");
                         }
                         //check account exist
-                        if (strAcconutNO.equals(saccountno)) {
+                        if (strAcconutNO.equals(sAccountNo)) {
                             JOptionPane.showMessageDialog(null, "Account already exist !", "EXIST!", JOptionPane.WARNING_MESSAGE);
                         } else {
                             String strPassword = "";
-                            rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE Password = '" + spass + "'");
-                            while (rs.next()) {
-                                strPassword = rs.getString(4);
+                            resultSet = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE Password = '" + spass + "'");
+                            while (resultSet.next()) {
+                                strPassword = resultSet.getString("Password");
                             }
                             //check same pass
                             if (strPassword.equals(spass)) {
@@ -237,22 +234,23 @@ public class Registration extends JFrame implements ActionListener {
 
                                 //check date later
                                 try {
-                                    if (isValid(Date)) {
+                                    if (isValid(birthDate)) {
                                         int amount = Integer.parseInt(sAmount);
                                         if (amount >= 100) {
-                                            statement = connection.createStatement();
-                                            ps = connection.prepareStatement("INSERT INTO UserAccountInfo " + " (AccountNO,FirstName,LastName,Password,ConfirmPassword,BirthDay,BirthMonth,BirthYear,Amount) " + " VALUES(?,?,?,?,?,?,?,?,?)");
-                                            ps.setString(1, txtAccountNo.getText());
-                                            ps.setString(2, txtFName.getText());
-                                            ps.setString(3, txtLName.getText());
-                                            ps.setString(4, txtPassword.getText());
-                                            ps.setString(5, txtConfirmPass.getText());
-                                            ps.setString(6, txtDay.getText());
-                                            ps.setString(7, txtMonth.getText());
-                                            ps.setString(8, txtYear.getText());
-                                            ps.setString(9, txtCash.getText());
 
-                                            ps.executeUpdate();
+                                            statement = connection.createStatement();
+                                            preparedStatement = connection.prepareStatement("INSERT INTO UserAccountInfo " + " (Time,Date,AccountNo,FirstName,LastName,Password,ConfirmPassword,BirthDate,Amount) " + " VALUES(?,?,?,?,?,?,?,?,?)");
+                                            preparedStatement.setString(1, dateAndTime.getCurrentTime());
+                                            preparedStatement.setString(2, dateAndTime.getCurrentDate());
+                                            preparedStatement.setString(3, txtAccountNo.getText());
+                                            preparedStatement.setString(4, txtFName.getText());
+                                            preparedStatement.setString(5, txtLName.getText());
+                                            preparedStatement.setString(6, txtPassword.getText());
+                                            preparedStatement.setString(7, txtConfirmPass.getText());
+                                            preparedStatement.setString(8, birthDate);
+                                            preparedStatement.setString(9, txtCash.getText());
+
+                                            preparedStatement.executeUpdate();
 
                                             JOptionPane.showMessageDialog(null, "Your Account has been successfully Created.", "ATM", JOptionPane.INFORMATION_MESSAGE);
                                             txtAccountNo.requestFocus(true);
@@ -287,7 +285,7 @@ public class Registration extends JFrame implements ActionListener {
 
             } catch (SQLException sqlEx) {
                 JOptionPane.showMessageDialog(null, "General error", "ATM", JOptionPane.INFORMATION_MESSAGE);
-//                System.out.println(sqlEx);
+                System.out.println(sqlEx);
             }
 
         }
@@ -301,7 +299,7 @@ public class Registration extends JFrame implements ActionListener {
 
             // ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
             LocalDate.parse(date,
-                    DateTimeFormatter.ofPattern("uuuu-M-d")
+                    DateTimeFormatter.ofPattern("d-M-uuuu")
                             .withResolverStyle(ResolverStyle.STRICT)
             );
 

@@ -4,17 +4,13 @@ import java.awt.event.*;
 import java.sql.*;
 
 public class BalanceTransfer extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
-    public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth=globalVariable.getWindowWidth();
-        windowHeight=globalVariable.getWindowHeight();
-        winX=globalVariable.getWinX();
-        winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
+    String assetsPath = "E:\\Java\\ATM_BOOTH\\assets";
 
+    public static void main(String[] args) {
         BalanceTransfer balanceTransfer = new BalanceTransfer();
         balanceTransfer.setLocation(winX, winY);
         balanceTransfer.setSize(windowWidth, windowHeight);
@@ -40,7 +36,7 @@ public class BalanceTransfer extends JFrame implements ActionListener {
     JLabel lblReceiverTxt = new JLabel("Receiver Account");
 
     Connection connection;
-    //ResultSet rs;
+    //ResultSet resultSet;
     Statement statement;
     PreparedStatement ps;
 
@@ -89,7 +85,7 @@ public class BalanceTransfer extends JFrame implements ActionListener {
         lblReceiverAccountNo.setBackground(Color.black);
         lblReceiverAccountNo.setForeground(Color.yellow);
 
-        //-----Adding the an actionlistener to the buttons
+        //-----Adding the an action listener to the buttons
         btnBack2Menu.addActionListener(this);
         btnTransferBalance.addActionListener(this);
 
@@ -155,12 +151,12 @@ public class BalanceTransfer extends JFrame implements ActionListener {
                     String strReadSenderPin = "";
                     String strReadTransferAmount = "";
                     statement = connection.createStatement();
-                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO ='" + Login.currentLoginAccountNo + "'");
+                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo ='" + Login.currentLoginAccountNo + "'");
 
                     while (rs.next()) {
-                        strSenderAccNo = rs.getString(9);
-                        strReadSenderPin = rs.getString(4);
-                        strReadTransferAmount = rs.getString(8);
+                        strSenderAccNo = rs.getString("AccountNo");
+                        strReadSenderPin = rs.getString("Password");
+                        strReadTransferAmount = rs.getString("Amount");
                     }
                     if (strSenderAccNo.length() != 0) {
                         if (strReadSenderPin.equals(txtSenderPin.getText())) {
@@ -172,10 +168,10 @@ public class BalanceTransfer extends JFrame implements ActionListener {
                                 //check user exist or not
                                 String strReceiverAccNo = "";
                                 String strReceiverCurrentBalance = "";
-                                ResultSet rs1 = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO ='" + txtReceiverAccountNo.getText() + "'");
+                                ResultSet rs1 = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo ='" + txtReceiverAccountNo.getText() + "'");
                                 while (rs1.next()) {
-                                    strReceiverAccNo = rs1.getString(9);
-                                    strReceiverCurrentBalance = rs1.getString(8);
+                                    strReceiverAccNo = rs1.getString("AccountNo");
+                                    strReceiverCurrentBalance = rs1.getString("Amount");
                                 }
                                 //check receiver
                                 if (strSenderAccNo.equals(strReceiverAccNo)) {
@@ -192,8 +188,8 @@ public class BalanceTransfer extends JFrame implements ActionListener {
 //                                    clear();
                                             JOptionPane.showMessageDialog(null, "Your has been successfully Transfered " + a + "$", "ATM", JOptionPane.INFORMATION_MESSAGE);
 
-                                            String sql1 = "update UserAccountInfo SET Amount='" + currentSenderBalance + "'WHERE AccountNO='" + strSenderAccNo + "'";
-                                            String sql2 = "update UserAccountInfo SET Amount='" + currentReceiverBalance + "'WHERE AccountNO='" + strReceiverAccNo + "'";
+                                            String sql1 = "update UserAccountInfo SET Amount='" + currentSenderBalance + "'WHERE AccountNo='" + strSenderAccNo + "'";
+                                            String sql2 = "update UserAccountInfo SET Amount='" + currentReceiverBalance + "'WHERE AccountNo='" + strReceiverAccNo + "'";
 
                                             //updater sender account
                                             PreparedStatement ps1 = connection.prepareStatement(sql1);

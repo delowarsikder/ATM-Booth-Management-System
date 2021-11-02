@@ -5,16 +5,13 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class PinChange extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
+    String assetsPath = "E:\\Java\\ATM_BOOTH\\assets";
+
     public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth=globalVariable.getWindowWidth();
-        windowHeight=globalVariable.getWindowHeight();
-        winX=globalVariable.getWinX();
-        winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
 
         PinChange pinChange = new PinChange();
         pinChange.setSize(windowWidth, windowHeight);
@@ -143,17 +140,17 @@ public class PinChange extends JFrame implements ActionListener {
                     String strAccNo = "";
                     String strPass = "";
 
-                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO='" + Login.currentLoginAccountNo + "'");
+                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo='" + Login.currentLoginAccountNo + "'");
                     while (rs.next()) {
-                        strAccNo = rs.getString(9);
-                        strPass = rs.getString(4);
+                        strAccNo = rs.getString("AccountNo");
+                        strPass = rs.getString("Password");
                     }
                     ResultSet rs1 = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE Password='" + snewpass + "'");
                     String strRepeatPass = "";
                     while (rs1.next()) {
-                        strRepeatPass = rs1.getString(4);
+                        strRepeatPass = rs1.getString("Password");
                     }
-//                    System.out.println("Login-acc: "+Login.currentLoginAccountNo);
+
                     if (!(strAccNo.equals(""))) {//accno match
                         if (strPass.equals(scurrentpass)) {
                             if (snewpass.equals(snewconfirmpass)) {
@@ -168,7 +165,7 @@ public class PinChange extends JFrame implements ActionListener {
 //                                    clear();
                                             JOptionPane.showMessageDialog(null, "Your Pin has been successfully Changed.", "ATM", JOptionPane.INFORMATION_MESSAGE);
 
-                                            String sql = "update UserAccountInfo SET Password='" + txtNewPass.getText() + "',ConfirmPassword='" + txtNewConfirmPass.getText() + "'WHERE AccountNO='" + Login.currentLoginAccountNo + "'";
+                                            String sql = "update UserAccountInfo SET Password='" + txtNewPass.getText() + "',ConfirmPassword='" + txtNewConfirmPass.getText() + "'WHERE AccountNo='" + Login.currentLoginAccountNo + "'";
                                             preparedStatement = connection.prepareStatement(sql);
                                             preparedStatement.executeUpdate();
                                             txtNewPass.requestFocus(true);

@@ -5,17 +5,12 @@ import java.io.File;
 import java.sql.*;
 
 public class TransactionHistory extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
+    String  assetsPath= "E:\\Java\\ATM_BOOTH\\assets";
     public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth=globalVariable.getWindowWidth();
-        windowHeight=globalVariable.getWindowHeight();
-        winX=globalVariable.getWinX();
-        winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
-
         TransactionHistory transactionHistory = new TransactionHistory();
         transactionHistory.setLocation(winX, winY);
         transactionHistory.setSize(windowWidth, windowHeight);
@@ -25,18 +20,15 @@ public class TransactionHistory extends JFrame implements ActionListener {
     }
 
     Connection connection;
-    //ResultSet rs;
+    //ResultSet resultSet;
     Statement statement;
     PreparedStatement preparedStatement;
 
     public TransactionHistory() {
         super("ATM Booth");
         DateAndTime dateAndTime = new DateAndTime();
-//        System.out.println(dateAndTime.getCurrentDate());
-//        System.out.println(dateAndTime.getCurrentTime());
         GlobalVariable globalVariable = new GlobalVariable();
 
-        System.out.println("Height: " + globalVariable.getWindowWidth());
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -67,30 +59,13 @@ public class TransactionHistory extends JFrame implements ActionListener {
 
         //add data into database
 
-        try {
-//            DateAndTime dateAndTime = new DateAndTime();
-            Statement statement1;
-            PreparedStatement preparedStatement1;
-
-            statement1 = connection.createStatement();
-            preparedStatement1 = connection.prepareStatement("INSERT INTO TransactionHistory " + " (Time,Date,AccountNo,Type,Amount,ReceiverAccountNo) " + " VALUES(?,?,?,?,?,?)");
-            preparedStatement1.setString(1, dateAndTime.getCurrentTime());
-            preparedStatement1.setString(2, dateAndTime.getCurrentDate());
-            preparedStatement1.setString(3, Login.currentLoginAccountNo);
-            preparedStatement1.setString(4, "Deposit");
-            preparedStatement1.setString(5, String.valueOf(100));
-            preparedStatement1.setString(6, "");
-            preparedStatement1.executeUpdate();
-            statement1.close();
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+//do some thing here
     }
+
+
 }

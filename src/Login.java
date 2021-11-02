@@ -7,14 +7,13 @@ public class Login extends JFrame implements ActionListener {
     static String currentLoginAccountNo = "";//storage for all class to validate accurate user
     static int windowWidth, windowHeight;
     static int winX, winY;
-    static String assetsPath;
+    String  assetsPath= "E:\\Java\\ATM_BOOTH\\assets";
     public static void main(String[] args) {
         GlobalVariable globalVariable = new GlobalVariable();
         windowWidth=globalVariable.getWindowWidth();
         windowHeight=globalVariable.getWindowHeight();
         winX=globalVariable.getWinX();
         winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
 
         Login login = new Login();
         login.setLocation(winX, winY);
@@ -117,12 +116,13 @@ public class Login extends JFrame implements ActionListener {
                     String strPass = "";
                     String strFname = "";
                     String strLname = "";
-                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO='" + str1 + "'");
+
+                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo='" + str1 + "'");
                     while (rs.next()) {
-                        strAccount = rs.getString(9);
-                        strPass = rs.getString(4);
-                        strFname = rs.getString(1);
-                        strLname = rs.getString(2);
+                        strAccount = rs.getString("AccountNo");
+                        strPass = rs.getString("Password");
+                        strFname = rs.getString("FirstName");
+                        strLname = rs.getString("LastName");
                     }
 
                     statement.close();
@@ -131,11 +131,11 @@ public class Login extends JFrame implements ActionListener {
                         if (strPass.equals(str2)) {
                             currentLoginAccountNo = strAccount;
                             JOptionPane.showMessageDialog(null, "Welcome " + strFname + " " + strLname, "Welcome", JOptionPane.INFORMATION_MESSAGE);
-                            QuerySection panel = new QuerySection();
-                            panel.setSize(windowWidth, windowHeight);
-                            panel.setVisible(true);
-                            panel.setResizable(false);
-                            panel.setLocation(400, 250);
+                            QuerySection querySection = new QuerySection();
+                            querySection.setSize(windowWidth, windowHeight);
+                            querySection.setVisible(true);
+                            querySection.setResizable(false);
+                            querySection.setLocation(winX, winY);
                             dispose();
 
                         } else {

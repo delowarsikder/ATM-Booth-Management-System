@@ -4,17 +4,12 @@ import java.awt.event.*;
 import java.sql.*;
 
 public class Deposit extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
+    String  assetsPath= "E:\\Java\\ATM_BOOTH\\assets";
     public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth=globalVariable.getWindowWidth();
-        windowHeight=globalVariable.getWindowHeight();
-        winX=globalVariable.getWinX();
-        winY=globalVariable.getWinY();
-        assetsPath=globalVariable.getAssetsPath();
-
         Deposit deposit = new Deposit();
         deposit.setLocation(winX, winY);
         deposit.setSize(windowWidth, windowHeight);
@@ -120,16 +115,16 @@ public class Deposit extends JFrame implements ActionListener {
                 } else {
 
                     statement = connection.createStatement();
-                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO ='" + Login.currentLoginAccountNo + "'");
+                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo ='" + Login.currentLoginAccountNo + "'");
 
                     String strAccNo = "";
                     String strPinNo = "";
                     String strBalance = "";
 
                     while (rs.next()) {
-                        strAccNo = rs.getString(9);
-                        strBalance = rs.getString(8);
-                        strPinNo = rs.getString(4);
+                        strAccNo = rs.getString("AccountNo");
+                        strBalance = rs.getString("Amount");
+                        strPinNo = rs.getString("Password");
                     }
                     if (strAccNo.length() != 0) {
 
@@ -146,7 +141,7 @@ public class Deposit extends JFrame implements ActionListener {
                                 if (n == JOptionPane.YES_OPTION) {
                                     int sum = a + b;
                                     JOptionPane.showMessageDialog(null, "Your Deposit " + b + "$ is successful", "ATM", JOptionPane.INFORMATION_MESSAGE);
-                                    ps = connection.prepareStatement("UPDATE UserAccountInfo SET Amount = '" + sum + "'WHERE AccountNO = '" + strAccNo + "'");
+                                    ps = connection.prepareStatement("UPDATE UserAccountInfo SET Amount = '" + sum + "'WHERE AccountNo = '" + strAccNo + "'");
                                     ps.executeUpdate();
                                     txtPinNo.requestFocus(true);
 
@@ -190,7 +185,7 @@ public class Deposit extends JFrame implements ActionListener {
             preparedStatement1.setString(3, Login.currentLoginAccountNo);
             preparedStatement1.setString(4, "Deposit");
             preparedStatement1.setString(5, String.valueOf(b));
-            preparedStatement1.setString(6, "Not Allowed");
+            preparedStatement1.setString(6, "Owner");
             preparedStatement1.executeUpdate();
             statement1.close();
 

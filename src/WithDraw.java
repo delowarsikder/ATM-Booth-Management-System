@@ -4,19 +4,13 @@ import java.awt.event.*;
 import java.sql.*;
 
 public class WithDraw extends JFrame implements ActionListener {
-    static int windowWidth, windowHeight;
-    static int winX, winY;
-    static String assetsPath;
+    static int winX = 400;
+    static int winY = 150;
+    static int windowWidth = 370;
+    static int windowHeight = 400;
+    String assetsPath = "E:\\Java\\ATM_BOOTH\\assets";
 
     public static void main(String[] args) {
-        GlobalVariable globalVariable = new GlobalVariable();
-        windowWidth = globalVariable.getWindowWidth();
-        windowHeight = globalVariable.getWindowHeight();
-        winX = globalVariable.getWinX();
-        winY = globalVariable.getWinY();
-        assetsPath = globalVariable.getAssetsPath();
-
-
         WithDraw withDraw = new WithDraw();
         withDraw.setLocation(winX, winY);
         withDraw.setSize(windowWidth, windowHeight);
@@ -123,25 +117,23 @@ public class WithDraw extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Some Field Empty", "Warning", JOptionPane.WARNING_MESSAGE);
                 } else {
                     statement = connection.createStatement();
-                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNO ='" + Login.currentLoginAccountNo + "'");
+                    ResultSet rs = statement.executeQuery("SELECT * FROM UserAccountInfo WHERE AccountNo ='" + Login.currentLoginAccountNo + "'");
 
                     String strAccNo = "";
                     String strPinNo = "";
                     String strBalance = "";
 
                     while (rs.next()) {
-                        strAccNo = rs.getString(9);
-                        strBalance = rs.getString(8);
-                        strPinNo = rs.getString(4);
+                        strAccNo = rs.getString("AccountNo");
+                        strBalance = rs.getString("Amount");
+                        strPinNo = rs.getString("Password");
                     }
                     if (strAccNo.length() != 0) {
                         if (strPinNo.equals(txtPinNo.getText())) {
 
                             int a = Integer.parseInt(strBalance);
                             int b = Integer.parseInt(txtWithdrawAmount.getText());
-
                             if (a >= b) {
-
                                 if (b < 50) {
                                     JOptionPane.showMessageDialog(null, "The Minimum cash you can withdraw is 50$", "ATM", JOptionPane.INFORMATION_MESSAGE);
                                     txtWithdrawAmount.setText("");
@@ -150,7 +142,7 @@ public class WithDraw extends JFrame implements ActionListener {
                                     if (n == JOptionPane.YES_OPTION) {
                                         int sub = a - b;
                                         JOptionPane.showMessageDialog(null, "Your Withdraw " + b + "$ is successful", "ATM", JOptionPane.INFORMATION_MESSAGE);
-                                        preparedStatement = connection.prepareStatement("UPDATE UserAccountInfo SET Amount = '" + sub + "'WHERE AccountNO = '" + strAccNo + "'");
+                                        preparedStatement = connection.prepareStatement("UPDATE UserAccountInfo SET Amount = '" + sub + "'WHERE AccountNo = '" + strAccNo + "'");
                                         preparedStatement.executeUpdate();
                                         txtPinNo.requestFocus(true);
                                         AddWithDrawHistory(b);
@@ -198,7 +190,7 @@ public class WithDraw extends JFrame implements ActionListener {
             preparedStatement1.setString(3, Login.currentLoginAccountNo);
             preparedStatement1.setString(4, "Withdraw");
             preparedStatement1.setString(5, String.valueOf(b));
-            preparedStatement1.setString(6, "Not Allowed");
+            preparedStatement1.setString(6, "Owner");
             preparedStatement1.executeUpdate();
             statement1.close();
 
